@@ -12,6 +12,7 @@ pipeline {
   }
 
   stages {
+
     stage('Clone Code') {
       steps {
         git branch: 'main', url: 'https://github.com/ganeshhhhhh/poc-3.git'
@@ -23,8 +24,6 @@ pipeline {
         sh 'mvn clean package'
       }
     }
-  }
-}
 
     stage('SonarQube') {
       steps {
@@ -43,14 +42,13 @@ pipeline {
     stage('Docker Push') {
       steps {
         sh '''
-        echo "Login to DockerHub"
-        docker login -u yourdockerhub -p yourpassword
+        docker login -u ganeshhhhhh -p YOUR_PASSWORD
         docker push $DOCKER_IMAGE:$BUILD_NUMBER
         '''
       }
     }
 
-    stage('Create EKS (skip if exists)') {
+    stage('Create EKS') {
       steps {
         sh '''
         eksctl get cluster --name $CLUSTER_NAME || \
