@@ -53,8 +53,8 @@ pipeline {
     stage('Create EKS') {
       steps {
         sh '''
-        eksctl get cluster --name $CLUSTER_NAME || \
-        eksctl create cluster \
+        /usr/local/bin/eksctl get cluster --name $CLUSTER_NAME || \
+        /usr/local/bin/eksctl create cluster \
         --name $CLUSTER_NAME \
         --region $REGION \
         --nodes 2
@@ -65,7 +65,7 @@ pipeline {
     stage('Configure Kube') {
       steps {
         sh '''
-        aws eks update-kubeconfig \
+        /usr/local/bin/aws eks update-kubeconfig \
         --region $REGION \
         --name $CLUSTER_NAME
         '''
@@ -74,15 +74,18 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh 'kubectl apply -f k8s/'
+        sh '''
+        /usr/local/bin/kubectl apply -f deployment.yaml
+        /usr/local/bin/kubectl apply -f service.yaml
+        '''
       }
     }
 
     stage('Verify') {
       steps {
         sh '''
-        kubectl get pods
-        kubectl get svc
+        /usr/local/bin/kubectl get pods
+        /usr/local/bin/kubectl get svc
         '''
       }
     }
