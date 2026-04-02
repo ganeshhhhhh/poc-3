@@ -1,14 +1,17 @@
 pipeline {
   agent any
 
+  tools {
+    maven 'maven3'
+  }
+
   environment {
     CLUSTER_NAME = "demo-eks"
     REGION = "ap-south-1"
-    DOCKER_IMAGE = "yourdockerhub/myapp"
+    DOCKER_IMAGE = "ganeshhhhhh/myapp"
   }
 
   stages {
-
     stage('Clone Code') {
       steps {
         git branch: 'main', url: 'https://github.com/ganeshhhhhh/poc-3.git'
@@ -20,6 +23,8 @@ pipeline {
         sh 'mvn clean package'
       }
     }
+  }
+}
 
     stage('SonarQube') {
       steps {
