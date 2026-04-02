@@ -4,7 +4,7 @@ pipeline {
   environment {
     CLUSTER_NAME = "demo-eks"
     REGION = "ap-south-1"
-    DOCKER_IMAGE = "ganeshhhhhh/myapp"
+    DOCKER_IMAGE = "ockerlitud/myapp"
   }
 
   stages {
@@ -43,7 +43,7 @@ pipeline {
           passwordVariable: 'DOCKER_PASS'
         )]) {
           sh '''
-          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          echo $DOCKER_PASS | /usr/bin/docker login -u $DOCKER_USER --password-stdin
           /usr/bin/docker push $DOCKER_IMAGE:$BUILD_NUMBER
           '''
         }
@@ -68,14 +68,6 @@ pipeline {
         aws eks update-kubeconfig \
         --region $REGION \
         --name $CLUSTER_NAME
-        '''
-      }
-    }
-
-    stage('Update Image') {
-      steps {
-        sh '''
-        sed -i "s|image:.*|image: $DOCKER_IMAGE:$BUILD_NUMBER|" k8s/deployment.yaml
         '''
       }
     }
