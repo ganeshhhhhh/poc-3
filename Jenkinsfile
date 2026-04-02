@@ -11,7 +11,7 @@ pipeline {
 
     stage('Clone Code') {
       steps {
-        git branch: 'main', 'https://github.com/ganeshhhhhh/poc-3.git'
+        git branch: 'main', url: 'https://github.com/ganeshhhhhh/poc-3.git'
       }
     }
 
@@ -23,7 +23,9 @@ pipeline {
 
     stage('SonarQube') {
       steps {
-        sh 'mvn sonar:sonar'
+        withSonarQubeEnv('sonar') {
+          sh 'mvn clean verify sonar:sonar'
+        }
       }
     }
 
@@ -36,15 +38,17 @@ pipeline {
     stage('Docker Push') {
       steps {
         sh '''
+        echo "Login to DockerHub"
         docker login -u yourdockerhub -p yourpassword
         docker push $DOCKER_IMAGE:$BUILD_NUMBER
         '''
       }
     }
 
-    stage('Create EKS') {
+    stage('Create EKS (skip if exists)') {
       steps {
         sh '''
+        eksctl get cluster --name $CLUSTER_NAME || \
         eksctl create cluster \
         --name $CLUSTER_NAME \
         --region $REGION \
@@ -79,7 +83,10 @@ pipeline {
 
     stage('Verify') {
       steps {
-        sh 'kubectl get svc'
+        sh '''
+        kubectl get pods
+        kubectl get svc
+        '''
       }
     }
   }
