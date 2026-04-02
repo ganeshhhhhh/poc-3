@@ -11,7 +11,7 @@ pipeline {
 
     stage('Clone Code') {
       steps {
-        git 'https://github.com/ganeshhhhhh/poc-3.git'
+        git branch: 'main', 'https://github.com/ganeshhhhhh/poc-3.git'
       }
     }
 
