@@ -1,10 +1,6 @@
 pipeline {
   agent any
 
-  tools {
-    maven 'maven3'
-  }
-
   environment {
     CLUSTER_NAME = "demo-eks"
     REGION = "ap-south-1"
@@ -35,16 +31,22 @@ pipeline {
 
     stage('Docker Build') {
       steps {
-        sh 'docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
+        sh '/usr/bin/docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
       }
     }
 
     stage('Docker Push') {
       steps {
-        sh '''
-        docker login -u ganeshhhhhh -p YOUR_PASSWORD
-        docker push $DOCKER_IMAGE:$BUILD_NUMBER
-        '''
+        withCredentials([usernamePassword(
+          credentialsId: 'docker-creds',
+          usernameVariable: 'DOCKER_USER',
+          passwordVariable: 'DOCKER_PASS'
+        )]) {
+          sh '''
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          /usr/bin/docker push $DOCKER_IMAGE:$BUILD_NUMBER
+          '''
+        }
       }
     }
 
