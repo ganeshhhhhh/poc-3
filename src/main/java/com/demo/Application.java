@@ -10,7 +10,7 @@ public class Application {
 
     @RequestMapping("/")
     String home() {
-        return "Hello from EKS DevOps 🚀";
+        return "Hello from EKS DevOps(GANESH PRASAD MAITY) 🚀";
     }
 
     public static void main(String[] args) {
