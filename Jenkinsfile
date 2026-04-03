@@ -82,10 +82,8 @@ stage('Deploy') {
     sh '''
     echo "Deploying latest image: $DOCKER_IMAGE:$BUILD_NUMBER"
 
-    # Update deployment with latest image (NO manual tag anymore)
     /usr/local/bin/kubectl set image deployment/myapp myapp=$DOCKER_IMAGE:$BUILD_NUMBER
 
-    # Wait for rollout
     /usr/local/bin/kubectl rollout status deployment myapp
     '''
   }
