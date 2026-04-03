@@ -13,7 +13,6 @@
   <name>myapp</name>
   <description>Demo Spring Boot Application</description>
 
-  <!-- ✅ Spring Boot Parent -->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
@@ -21,27 +20,22 @@
     <relativePath/>
   </parent>
 
-  <!-- ✅ Java Version (MANDATORY for Spring Boot 3) -->
   <properties>
     <java.version>17</java.version>
   </properties>
 
-  <!-- ✅ Dependencies -->
   <dependencies>
 
-    <!-- Spring Boot Web -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-    <!-- Optional: Actuator (good for health checks in Kubernetes) -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- Optional: Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -50,11 +44,9 @@
 
   </dependencies>
 
-  <!-- ✅ Build Section -->
   <build>
     <plugins>
 
-      <!-- 🔥 CRITICAL: Makes executable JAR -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
