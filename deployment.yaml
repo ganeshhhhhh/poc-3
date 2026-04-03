@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: ockerlitud/myapp:latest
+        image: ockerlitud/myapp:21
         ports:
         - containerPort: 8080
