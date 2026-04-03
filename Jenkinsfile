@@ -110,10 +110,10 @@ stage('Verify') {
 
 post {
 success {
-echo "✅ Deployment Successful with image $DOCKER_IMAGE:$BUILD_NUMBER"
+echo "Deployment Successful with image $DOCKER_IMAGE:$BUILD_NUMBER"
 }
 failure {
-echo "❌ Deployment Failed"
+echo "Deployment Failed"
 }
 }
 }
