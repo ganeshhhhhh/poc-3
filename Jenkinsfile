@@ -1,10 +1,6 @@
 pipeline {
   agent any
 
-  parameters {
-    booleanParam(name: 'CREATE_EKS', defaultValue: true, description: 'Create EKS Cluster')
-  }
-
   environment {
     CLUSTER_NAME = "demo-eks"
     REGION = "ap-south-1"
@@ -54,15 +50,17 @@ pipeline {
       }
     }
 
-    stage('Create EKS') {
-      when {
-        expression { params.CREATE_EKS == true }
-      }
+    stage('Recreate EKS Cluster') {
       steps {
         sh '''
-        echo "Checking if EKS cluster exists..."
+        echo "Deleting existing cluster (if any)..."
 
-        /usr/local/bin/eksctl get cluster --name $CLUSTER_NAME || \
+        /usr/local/bin/eksctl delete cluster \
+        --name $CLUSTER_NAME \
+        --region $REGION || true
+
+        echo "Creating new EKS cluster..."
+
         /usr/local/bin/eksctl create cluster \
         --name $CLUSTER_NAME \
         --region $REGION \
@@ -86,7 +84,10 @@ pipeline {
         sh '''
         echo "Deploying latest image: $DOCKER_IMAGE:$BUILD_NUMBER"
 
-        /usr/local/bin/kubectl set image deployment/myapp myapp=$DOCKER_IMAGE:$BUILD_NUMBER
+        /usr/local/bin/kubectl set image deployment/myapp myapp=$DOCKER_IMAGE:$BUILD_NUMBER || true
+
+        /usr/local/bin/kubectl apply -f deployment.yaml
+        /usr/local/bin/kubectl apply -f service.yaml
 
         /usr/local/bin/kubectl rollout status deployment myapp
         '''
