@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   parameters {
-    booleanParam(name: 'CREATE_EKS', defaultValue: false, description: 'Create EKS Cluster')
+    booleanParam(name: 'CREATE_EKS', defaultValue: true, description: 'Create EKS Cluster')
   }
 
   environment {
@@ -60,8 +60,13 @@ pipeline {
       }
       steps {
         sh '''
-        echo "Skipping EKS creation (already exists)"
-        /usr/local/bin/eksctl get cluster --name $CLUSTER_NAME
+        echo "Checking if EKS cluster exists..."
+
+        /usr/local/bin/eksctl get cluster --name $CLUSTER_NAME || \
+        /usr/local/bin/eksctl create cluster \
+        --name $CLUSTER_NAME \
+        --region $REGION \
+        --nodes 2
         '''
       }
     }
