@@ -59,6 +59,12 @@ pipeline {
         --name $CLUSTER_NAME \
         --region $REGION || true
 
+        echo "Waiting for CloudFormation stack deletion..."
+
+        aws cloudformation wait stack-delete-complete \
+          --stack-name eksctl-$CLUSTER_NAME-cluster \
+          --region $REGION || true
+
         echo "Creating new EKS cluster..."
 
         /usr/local/bin/eksctl create cluster \
